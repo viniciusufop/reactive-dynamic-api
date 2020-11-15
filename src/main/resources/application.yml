@@ -1,0 +1,10 @@
+# MONGODB (MongoProperties for local environment)
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      username: root
+      password: root123456
+      database: reactivedynamicapidb
+      authentication-database: admin

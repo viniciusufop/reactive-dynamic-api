@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 public class Field {
-
     private final String name;
     private final FieldType type;
 }

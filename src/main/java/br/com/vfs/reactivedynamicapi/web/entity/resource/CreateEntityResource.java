@@ -23,9 +23,9 @@ class CreateEntityResource {
     @PostMapping("/entities")
     @ResponseStatus(CREATED)
     public Mono<EntityResponse> create(@RequestBody final Mono<CreateEntityRequest> createEntityRequest){
-        final Mono<CreateEntity> createEntity = createEntityRequest.map(CreateEntityRequest::toModel);
-        final Mono<Entity> entity = createEntityService.apply(createEntity);
-        return entity.map(EntityResponse::new);
+        return createEntityRequest.map(CreateEntityRequest::toModel)
+                .as(createEntityService::apply)
+                .map(EntityResponse::new);
     }
 
 }

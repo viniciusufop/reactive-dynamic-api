@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.Objects.isNull;
 
@@ -21,6 +22,6 @@ public class CreateEntity {
     }
 
     public Entity entity(){
-        return new Entity(name, true, fields);
+        return new Entity(UUID.randomUUID().toString(), name, true, fields);
     }
 }
