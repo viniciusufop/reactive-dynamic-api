@@ -23,7 +23,7 @@ class CreateEntityResource {
     @ResponseStatus(CREATED)
     public Mono<EntityResponse> create(@RequestBody final Mono<CreateEntityRequest> createEntityRequest){
         return createEntityRequest.map(CreateEntityRequest::toModel)
-                .as(createEntityService::apply)
+                .as(createEntityService)
                 .map(EntityResponse::new);
     }
 }

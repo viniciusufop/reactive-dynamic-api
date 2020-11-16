@@ -11,7 +11,7 @@ import static java.util.Objects.isNull;
 @UtilityClass
 public class EntityNameValidator {
 
-    public static Mono<Entity> apply(final Entity newEntity, Flux<Entity> entityFlux){
+    public static Mono<Entity> apply(final Entity newEntity, final Flux<Entity> entityFlux){
         return entityFlux
                 .any(entity -> isEqualName(newEntity, entity))
                 .flatMap(exist -> isExistName(exist, newEntity));
