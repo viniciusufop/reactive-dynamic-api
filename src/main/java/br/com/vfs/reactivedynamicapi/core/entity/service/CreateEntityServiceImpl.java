@@ -2,6 +2,7 @@ package br.com.vfs.reactivedynamicapi.core.entity.service;
 
 import br.com.vfs.reactivedynamicapi.core.entity.integration.EntityIntegration;
 import br.com.vfs.reactivedynamicapi.core.entity.model.CreateEntity;
+import br.com.vfs.reactivedynamicapi.core.entity.validator.CreateEntityValidator;
 import br.com.vfs.reactivedynamicapi.core.entity.validator.EntityNameValidator;
 import br.com.vfs.reactivedynamicapi.model.entity.Entity;
 import lombok.RequiredArgsConstructor;
@@ -10,21 +11,35 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
 class CreateEntityServiceImpl implements CreateEntityService {
 
     private final EntityIntegration entityIntegration;
-
+    private final Collection<CreateEntityValidator> validators;
     @Override
     public Mono<Entity> apply(final Mono<CreateEntity> createEntity) {
         final Flux<Entity> entities = entityIntegration.findAll();
-        //TODO salvando sem validacao
         return createEntity.map(CreateEntity::entity)
                 .flatMap(entity -> EntityNameValidator.apply(entity, entities))
+                .as(this::executeValidators)
                 .as(entityIntegration::save)
                 .doOnSuccess(entity -> log.info("success in save entity {}", entity.getName()))
                 .doOnError(exception -> log.error("error in save entity", exception));
+    }
+
+    private Mono<Entity> executeValidators(Mono<Entity> entity) {
+        final Optional<CreateEntityValidator> validator = validators
+                .stream()
+                .reduce((createEntityValidator, createEntityValidator2) ->
+                        createEntityValidator.compose(createEntityValidator2));
+
+        if(validator.isEmpty()) return entity;
+
+        return validator.get().apply(entity);
     }
 }

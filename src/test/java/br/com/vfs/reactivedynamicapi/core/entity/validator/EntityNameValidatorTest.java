@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.UUID;
 
-public class EntityNameValidatorTest {
+class EntityNameValidatorTest {
 
     @Test
     void should_success_with_entity_name_not_exist_in_collection(){

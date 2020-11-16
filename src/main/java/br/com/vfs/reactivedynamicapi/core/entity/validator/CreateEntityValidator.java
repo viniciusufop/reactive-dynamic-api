@@ -1,12 +1,16 @@
 package br.com.vfs.reactivedynamicapi.core.entity.validator;
 
-import br.com.vfs.reactivedynamicapi.core.entity.model.CreateEntity;
 import br.com.vfs.reactivedynamicapi.model.entity.Entity;
-import br.com.vfs.reactivedynamicapi.model.errors.ValidatorFailure;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-public interface CreateEntityValidator {
+import java.util.Objects;
+import java.util.function.Function;
 
-    Flux<ValidatorFailure> apply(final CreateEntity createEntity, final Flux<Entity> entities);
 
+public interface CreateEntityValidator extends Function<Mono<Entity>, Mono<Entity>> {
+
+    default CreateEntityValidator compose(final CreateEntityValidator before) {
+        Objects.requireNonNull(before);
+        return (Mono<Entity> v) -> apply(before.apply(v));
+    }
 }
