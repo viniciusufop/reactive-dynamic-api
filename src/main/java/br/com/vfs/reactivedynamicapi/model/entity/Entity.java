@@ -20,4 +20,10 @@ public class Entity {
         this.active = active;
         this.fields = isNull(fields) ? List.of() : fields;
     }
+
+    public boolean isDuplicateFieldName(final String fieldName) {
+        return fields.stream()
+                .filter(field -> fieldName.equalsIgnoreCase(field.getName()))
+                .count() > 1;
+    }
 }

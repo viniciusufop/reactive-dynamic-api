@@ -8,13 +8,13 @@ import reactor.core.publisher.Mono;
 @Component
 class EntityContainsFieldValidator implements CreateEntityValidator{
     @Override
-    public Mono<Entity> apply(Mono<Entity> entityMono) {
+    public Mono<Entity> apply(final Mono<Entity> entityMono) {
         return entityMono
-                .flatMap(this::validate);
+                .filter(this::validate)
+                .switchIfEmpty(Mono.error(new BaseException()));
     }
 
-    private Mono<Entity> validate(final Entity entity) {
-        if(entity.getFields().isEmpty()) return Mono.error(new BaseException());
-        return Mono.just(entity);
+    private boolean validate(final Entity entity) {
+        return !entity.getFields().isEmpty();
     }
 }
